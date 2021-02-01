@@ -1,0 +1,74 @@
+version: '3'
+services:
+  alpha:
+    image: adilet-ot-app/py-alpha
+    build:
+      context: ./alpha
+    ports:
+      - "5001:5000"
+    container_name: py-alpha
+    entrypoint: ["opentelemetry-instrument",  "python", "app.py"]
+    env_file:
+      - setup.env
+
+  beta:
+    image: adilet-ot-app/node-beta
+    build:
+      context: ./beta
+    container_name: node-beta
+    entrypoint: ["node", "-r", "./tracing.js", "index.js"]
+    env_file:
+      - setup.env
+
+  charlie:
+    image: adilet-ot-app/node-charlie
+    build:
+      context: ./charlie
+    container_name: node-charlie
+    entrypoint: ["node", "-r", "./tracing.js", "index.js"]
+    env_file:
+      - setup.env
+
+  delta:
+    image: adilet-ot-app/py-delta
+    build:
+      context: ./delta
+    container_name: py-delta
+    entrypoint: ["opentelemetry-instrument",  "python", "app.py"]
+    env_file:
+      - setup.env
+
+  echo:
+    image: adilet-ot-app/py-echo
+    build:
+      context: ./echo
+    container_name: py-echo
+    entrypoint: ["opentelemetry-instrument",  "python", "app.py"]
+    env_file:
+      - setup.env
+
+
+  # Collector
+  otel-collector:
+    image: otel/opentelemetry-collector-dev
+#    image: dtr.corp.appdynamics.com/pavan.krishna/otelcol:dev
+    container_name: otel-collector
+    command: ["--config=/etc/otel-config.yml", "${OTELCOL_ARGS}"]
+    volumes:
+      - ./otel-config.yml:/etc/otel-config.yml
+    ports:
+      - 55678:55678       # receiving port
+      - 55680
+    env_file:
+      - setup.env
+
+
+  # Zipkin
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+
+
+

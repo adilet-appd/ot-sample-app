@@ -1,0 +1,42 @@
+processors:
+  resource:
+    attributes:
+    - key: cloud.zone
+      value: "zone-1"
+      action: upsert
+    - key: host.name
+      value: "sample-container"
+      action: upsert
+    - key: service.namespace
+      action: upsert
+      value: "ot-sample-app"
+    - key: appdynamics.controller.host
+      value: "ec2-123-123-123-123.us-west-2.compute.amazonaws.com"
+      action: upsert
+    - key: appdynamics.controller.port
+      value: 8080
+      action: upsert
+    - key: appdynamics.controller.account
+      value: "customer1"
+      action: upsert
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+
+exporters:
+  otlphttp:
+    endpoint: "https://pdx-sls-agent-api.saas.appdynamics.com"
+    headers: {"x-api-key": ""}
+    insecure: true
+  zipkin:
+    endpoint: "http://zipkin:9411/api/v2/spans"
+    format: proto
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [resource]
+      exporters: [otlphttp, zipkin]

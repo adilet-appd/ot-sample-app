@@ -1,0 +1,6 @@
+FROM node:12
+ADD package.json package.json
+RUN npm install
+ADD index.js index.js
+ADD tracing.js tracing.js
+ADD helloworld.proto helloworld.proto
