@@ -59,6 +59,7 @@ services:
     ports:
       - 55678:55678       # receiving port
       - 55680
+      - 55681:55681       # http receiver
     env_file:
       - setup.env
 

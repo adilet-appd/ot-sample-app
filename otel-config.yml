@@ -24,6 +24,7 @@ receivers:
   otlp:
     protocols:
       grpc:
+      http:
 
 exporters:
   otlphttp:
