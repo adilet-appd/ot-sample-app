@@ -9,7 +9,6 @@ const port = 5000
 
 var PROTO_PATH = __dirname + '/helloworld.proto';
 
-var parseArgs = require('minimist');
 var grpc = require('@grpc/grpc-js');
 var protoLoader = require('@grpc/proto-loader');
 var packageDefinition = protoLoader.loadSync(
